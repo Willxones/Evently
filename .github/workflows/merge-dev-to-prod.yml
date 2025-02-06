@@ -1,0 +1,30 @@
+name: Merge development to main
+
+on:
+  workflow_dispatch:  # This allows manual triggering through GitHub UI
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+
+    - name: Fetch all branches
+      run: git fetch --all
+
+    - name: Checkout main branch
+      run: git checkout main
+
+    - name: Merge development into main
+      run: |
+        git merge --ff-only development || (echo "Merge failed: Please resolve conflicts manually" && exit 1)
+    
+    - name: Push changes to main
+      run: git push origin main
