@@ -37,3 +37,4 @@ coverage/
 jest/
 *.test.js
 *.test.ts
+.vercel
