@@ -6,6 +6,7 @@ on:
 jobs:
   merge:
     runs-on: ubuntu-latest
+    if: github.actor == 'Willxones'  # Ensure only you can trigger this
 
     steps:
     - name: Checkout repo
@@ -25,6 +26,6 @@ jobs:
     - name: Merge development into main
       run: |
         git merge --ff-only development || (echo "Merge failed: Please resolve conflicts manually" && exit 1)
-    
+
     - name: Push changes to main
       run: git push origin main
