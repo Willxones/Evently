@@ -1,0 +1,58 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check if PR was merged
+        id: check_merge
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            core.setOutput('merged', pullRequest.merged);
+
+      - name: Install Vercel CLI
+        if: steps.check_merge.outputs.merged == 'true' # Condition moved here
+        run: npm install -g vercel
+
+      - name: Deploy to Vercel (Preview)
+        if: steps.check_merge.outputs.merged == 'true' # Condition moved here
+        run: vercel --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Get Preview URL
+        id: preview_url
+        if: steps.check_merge.outputs.merged == 'true' # Condition moved here
+        run: |
+          echo "::set-output name=url::$(vercel url)"
+
+      - name: Add Preview URL to Pull Request
+        if: steps.check_merge.outputs.merged == 'true' # Condition moved here
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const url = '${{ steps.preview_url.outputs.url }}';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Preview deployment URL: ${url}`
+            });
