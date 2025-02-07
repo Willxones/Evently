@@ -46,20 +46,15 @@ jobs:
       - name: Add Preview URL to Pull Request
         if: steps.check_merge.outputs.merged == 'true'
         uses: actions/github-script@v6
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fetch = require('node-fetch');
-            const token = process.env.VERCEL_TOKEN;
-            const projectId = process.env.VERCEL_PROJECT_ID;
+            const token = '${{ secrets.VERCEL_TOKEN }}';
+            const projectId = '${{ secrets.VERCEL_PROJECT_ID }}';
 
-            const getDeploymentURL = async () => {
+            async function getDeploymentURL() {
               const res = await fetch(`https://api.vercel.com/v9/projects/${projectId}/deployments`, {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
+                headers: { Authorization: `Bearer ${token}` },
               });
 
               const data = await res.json();
@@ -69,9 +64,8 @@ jobs:
                 return null;
               }
 
-              const latestDeployment = data.deployments[0];
-              return latestDeployment.url ? `https://${latestDeployment.url}` : null;
-            };
+              return data.deployments[0]?.url ? `https://${data.deployments[0].url}` : null;
+            }
 
             let url = null;
             const maxAttempts = 10;
