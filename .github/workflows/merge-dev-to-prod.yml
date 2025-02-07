@@ -25,7 +25,7 @@ jobs:
 
     - name: Merge development into main
       run: |
-        git merge --ff-only --allow-unrelated-histories development || (echo "Merge failed: Please resolve conflicts manually" && exit 1)
+        git rebase development || (echo "Merge failed: Please resolve conflicts manually" && exit 1)
 
     - name: Push changes to main
-      run: git push origin main
+      run: git push --force-with-lease origin main
