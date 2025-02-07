@@ -27,58 +27,12 @@ jobs:
             core.setOutput('merged', pullRequest.merged);
 
       - name: Install Vercel CLI
-        if: steps.check_merge.outputs.merged == 'true'
+        if: steps.check_merge.outputs.merged == 'true' # Condition moved here
         run: npm install -g vercel
 
       - name: Deploy to Vercel (Preview)
-        if: steps.check_merge.outputs.merged == 'true'
+        if: steps.check_merge.outputs.merged == 'true' # Condition moved here
         run: vercel --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-
-      - name: Get Preview URL
-        id: preview_url
-        if: steps.check_merge.outputs.merged == 'true'
-        run: |
-          echo "url=$(vercel url)" >> $GITHUB_OUTPUT
-
-      - name: Add Preview URL to Pull Request
-        if: steps.check_merge.outputs.merged == 'true'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const token = '${{ secrets.VERCEL_TOKEN }}';
-            const projectId = '${{ secrets.VERCEL_PROJECT_ID }}';
-
-            async function getDeploymentURL() {
-              const res = await fetch(`https://api.vercel.com/v9/projects/${projectId}/deployments`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
-
-              const data = await res.json();
-
-              if (!data.deployments || data.deployments.length === 0) {
-                core.setFailed('No deployments found.');
-                return null;
-              }
-
-              return data.deployments[0]?.url ? `https://${data.deployments[0].url}` : null;
-            }
-
-            let url = null;
-            const maxAttempts = 10;
-            let attempts = 0;
-
-            while (!url && attempts < maxAttempts) {
-              await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
-              url = await getDeploymentURL();
-              attempts++;
-            }
-
-            if (url) {
-              core.setOutput('url', url);
-            } else {
-              core.setFailed('Failed to get preview URL after multiple attempts.');
-            }
