@@ -49,10 +49,43 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const url = '${{ steps.preview_url.outputs.url }}';
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Preview deployment URL: ${url}`
-            });
+            const projectId = '${{ secrets.VERCEL_PROJECT_ID }}';
+            const token = '${{ secrets.VERCEL_TOKEN }}';
+            const orgId = '${{ secrets.VERCEL_ORG_ID }}';
+
+            const getDeploymentURL = async () => {
+              const res = await fetch(`https://api.vercel.com/v9/projects/${projectId}/deployments`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+
+              const deployments = await res.json();
+
+              if (!deployments || deployments.length === 0) {
+                return null; // No deployments found
+              }
+
+              const latestDeployment = deployments[0]; // Get the latest deployment
+              if (latestDeployment.url) {
+                return latestDeployment.url;
+              } else {
+                return null; // URL not yet available
+              }
+            };
+
+            let url = null;
+            const maxAttempts = 10; // Adjust as needed
+            let attempts = 0;
+
+            while (!url && attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+              url = await getDeploymentURL();
+              attempts++;
+            }
+
+            if (url) {
+              core.setOutput('url', url);
+            } else {
+              core.setFailed('Failed to get preview URL after multiple attempts.');
+            }
