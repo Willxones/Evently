@@ -1,6 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import type { Database } from "../src/database.types.ts"; // Adjust this based on where your file is
+import type { Database } from "../src/database.types.ts";
 
 const prisma = new PrismaClient();
 const app = express();
@@ -14,7 +14,6 @@ async function main() {
 			title: "Test",
 		},
 	});
-	//change to reference a table in your schema
 	const val: Example[] = await prisma.example.findMany({
 		take: 10,
 	});
