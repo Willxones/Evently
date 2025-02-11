@@ -48,6 +48,14 @@ supabase start
 
 The database URL should be the same as that in the .env.example file, but if not then take the outputted DB URL and use that instead.
 
+Apply migrations to get the latest database structure.
+
+```
+supabase migration up
+```
+
+You can get a visual representation of your database here http://localhost:54323/project/default/database/schemas
+
 ## Start the server
 
 Run the application by using the following command in the server directory
