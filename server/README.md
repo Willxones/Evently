@@ -46,7 +46,7 @@ Now start Supabase within the server application.
 supabase start
 ```
 
-The database URL should be the same as that in the .env.example file, but if not then take the outputted DB URL and use that instead.
+The database port should be the same as that in the .env.example file, but if not then take the outputted DB port and use that instead.
 
 Apply migrations to get the latest database structure.
 
@@ -61,5 +61,18 @@ You can get a visual representation of your database here http://localhost:54323
 Run the application by using the following command in the server directory
 
 ```
-npm run dev
+docker-compose up --build
+```
+
+If you have not made any configuration changes you can run this instead
+
+```
+docker-compose up
+```
+
+After you have finished you may want to prune docker to remove all the unused containers, volumes and networks. Only use the volumes tag if you are happy to delete all of the saved data which includes node_modules in this case.
+
+```
+docker-compose down
+docker system prune --volumes
 ```
