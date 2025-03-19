@@ -38,3 +38,4 @@ jest/
 *.test.js
 *.test.ts
 .vercel
+request.rest
