@@ -13,7 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        Int     @id @default(autoincrement())
-  title     String
+model Profile {
+  id        String @id @default(cuid())
+  firstName String
+  lastName  String
+  location  String
+  bio       String?
+  image     String
+  interests String[]
+  linkedIn  String?
+  github    String?
+  twitter   String?
+  website   String?
+  createdAt DateTime @default(now())
+
+  userId    String @unique()
+
+  @@index([userId])
 }
