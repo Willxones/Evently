@@ -5,7 +5,7 @@ CREATE TABLE "Profile" (
     "lastName" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "bio" TEXT,
-    "image" TEXT NOT NULL,
+    "image" TEXT,
     "interests" TEXT[],
     "linkedIn" TEXT,
     "github" TEXT,

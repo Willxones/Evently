@@ -19,7 +19,7 @@ model Profile {
   lastName  String
   location  String
   bio       String?
-  image     String
+  image     String?
   interests String[]
   linkedIn  String?
   github    String?
