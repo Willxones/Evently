@@ -1,25 +1,10 @@
-// import rateLimit from 'express-rate-limit';
+import express from "express";
+import { rateLimit } from 'express-rate-limit';
 
-// // Define rate limiter settings
-// const limiter = rateLimit({
-//     windowMs: 15 * 60 * 1000, // 15 minutes
-//     max: 2, // Limit each IP to {} requests per windowMs
-//     message: 'Too many requests, please try again later.'
-// });
-
-// export default limiter;
-
-
-// filepath: c:\Users\Andrw\Evently\code\Evently\Evently\server\src\middlewares\rateLimiter.ts
-import rateLimit from "express-rate-limit";
-
-// Define rate limiter settings
-const limiter = rateLimit({
+export const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 2, // Limit each IP to 2 requests per windowMs
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    message: "Too many requests, please try again later.",
+    limit: 5, // Limit each IP to {} requests per `window for the time stated above (windowMs)
+    message: 'There have been too many requests, please wait and try again',
+    standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 });
-
-export default limiter;
