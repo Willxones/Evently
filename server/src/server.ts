@@ -16,10 +16,6 @@ app.get("/authed", authenticateToken, (req, res) => {
 	res.send("Welcome to Authed Evently!");
 });
 
-app.get("/public", (req, res) => {
-	res.send("Welcome to Public Evently!");
-});
-
 app.get("/highRequestTest", limiter, (req, res) => {
 	res.send("You are still within the request limit!");
 });
