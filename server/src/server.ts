@@ -1,6 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { authenticateToken } from "./middlewares/auth.js";
+import { limiter } from "./middlewares/rateLimiter.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,11 @@ app.get("/", (req, res) => {
 app.get("/authed", authenticateToken, (req, res) => {
 	res.send("Welcome to Authed Evently!");
 });
+
+app.get("/rateLimiterTest", limiter, (req, res) => {
+	res.send("You are still within the rate limit, try again!");
+});
+
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
