@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 
-export default function AttendeeLayout() {
+export default function Layout() {
 	return (
 		<>
 			<Outlet />
