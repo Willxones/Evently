@@ -22,6 +22,8 @@ export async function authenticateToken(
 			return;
 		}
 
+		req.user = { id: data.user.id };
+
 		next();
 	} catch (error) {
 		console.error(error);

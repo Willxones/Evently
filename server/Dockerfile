@@ -3,7 +3,6 @@ FROM node:20.19
 WORKDIR /app
 
 COPY package.json ./package.json
-COPY package-lock.json ./package-lock.json
 
 RUN npm install
 
@@ -15,4 +14,4 @@ RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD ["nodemon", "src/server.js"]
+CMD ["nodemon", "dist/server.js"]
