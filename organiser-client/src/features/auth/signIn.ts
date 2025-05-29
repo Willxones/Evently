@@ -6,5 +6,6 @@ export const signIn = async (email: string, password: string) => {
         password,
     });
     if (error) throw new Error(error.message);
+    console.log(data.session.access_token);
     return data;
 };

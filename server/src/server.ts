@@ -1,13 +1,11 @@
 import express from 'express';
 
-import profiles from './controllers/attendee/profiles.controller.js';
-import organisers from './controllers/organiser/organisers.controller.js';
+import organiser from './controllers/organiser/organiserProfile.controller.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use('/profiles', profiles);
-app.use('/organisers', organisers);
+app.use('/organiser', organiser);
 
 app.use(express.json());
 

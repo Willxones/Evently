@@ -8,19 +8,22 @@ CREATE TYPE "TicketStatus" AS ENUM ('UNUSED', 'USED', 'CANCELLED');
 CREATE TYPE "PurchaseStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED');
 
 -- CreateTable
-CREATE TABLE "Organiser" (
+CREATE TABLE "OrganiserProfile" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "location" TEXT,
+    "orgName" TEXT NOT NULL,
     "logoImage" TEXT NOT NULL,
     "bannerImage" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "linkedIn" TEXT,
-    "twitter" TEXT,
+    "displayEmail" TEXT NOT NULL,
+    "socials" JSONB,
     "website" TEXT,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Organiser_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "OrganiserProfile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -56,7 +59,7 @@ CREATE TABLE "TicketType" (
 CREATE TABLE "Ticket" (
     "id" TEXT NOT NULL,
     "ticketTypeId" TEXT NOT NULL,
-    "profileId" TEXT NOT NULL,
+    "attendeeProfileId" TEXT NOT NULL,
     "status" "TicketStatus" NOT NULL DEFAULT 'UNUSED',
     "qrCodeId" TEXT NOT NULL,
     "issuedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -65,7 +68,7 @@ CREATE TABLE "Ticket" (
 );
 
 -- CreateTable
-CREATE TABLE "Profile" (
+CREATE TABLE "AttendeeProfile" (
     "id" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
@@ -80,13 +83,13 @@ CREATE TABLE "Profile" (
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "AttendeeProfile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Purchase" (
     "id" TEXT NOT NULL,
-    "profileId" TEXT NOT NULL,
+    "attendeeProfileId" TEXT NOT NULL,
     "totalAmount" INTEGER NOT NULL,
     "status" "PurchaseStatus" NOT NULL DEFAULT 'PENDING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -103,7 +106,7 @@ CREATE TABLE "_PurchaseToTicket" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Organiser_userId_key" ON "Organiser"("userId");
+CREATE UNIQUE INDEX "OrganiserProfile_userId_key" ON "OrganiserProfile"("userId");
 
 -- CreateIndex
 CREATE INDEX "Event_organiserId_idx" ON "Event"("organiserId");
@@ -115,19 +118,19 @@ CREATE INDEX "TicketType_eventId_idx" ON "TicketType"("eventId");
 CREATE INDEX "Ticket_ticketTypeId_idx" ON "Ticket"("ticketTypeId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
+CREATE UNIQUE INDEX "AttendeeProfile_userId_key" ON "AttendeeProfile"("userId");
 
 -- CreateIndex
-CREATE INDEX "Profile_userId_idx" ON "Profile"("userId");
+CREATE INDEX "AttendeeProfile_userId_idx" ON "AttendeeProfile"("userId");
 
 -- CreateIndex
-CREATE INDEX "Purchase_profileId_idx" ON "Purchase"("profileId");
+CREATE INDEX "Purchase_attendeeProfileId_idx" ON "Purchase"("attendeeProfileId");
 
 -- CreateIndex
 CREATE INDEX "_PurchaseToTicket_B_index" ON "_PurchaseToTicket"("B");
 
 -- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_organiserId_fkey" FOREIGN KEY ("organiserId") REFERENCES "Organiser"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Event" ADD CONSTRAINT "Event_organiserId_fkey" FOREIGN KEY ("organiserId") REFERENCES "OrganiserProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TicketType" ADD CONSTRAINT "TicketType_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -136,10 +139,10 @@ ALTER TABLE "TicketType" ADD CONSTRAINT "TicketType_eventId_fkey" FOREIGN KEY ("
 ALTER TABLE "Ticket" ADD CONSTRAINT "Ticket_ticketTypeId_fkey" FOREIGN KEY ("ticketTypeId") REFERENCES "TicketType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Ticket" ADD CONSTRAINT "Ticket_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Ticket" ADD CONSTRAINT "Ticket_attendeeProfileId_fkey" FOREIGN KEY ("attendeeProfileId") REFERENCES "AttendeeProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Purchase" ADD CONSTRAINT "Purchase_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Purchase" ADD CONSTRAINT "Purchase_attendeeProfileId_fkey" FOREIGN KEY ("attendeeProfileId") REFERENCES "AttendeeProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PurchaseToTicket" ADD CONSTRAINT "_PurchaseToTicket_A_fkey" FOREIGN KEY ("A") REFERENCES "Purchase"("id") ON DELETE CASCADE ON UPDATE CASCADE;
