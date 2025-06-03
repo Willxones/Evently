@@ -17,7 +17,8 @@ async function createOrganiserProfile(req: Request, res: Response) {
             displayEmail,
             socials,
             website,
-        } = req.body;
+            userId,
+        }: OrganiserProfile = req.body;
 
         if (
             !firstName ||
@@ -30,9 +31,9 @@ async function createOrganiserProfile(req: Request, res: Response) {
         ) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
-        const userId = req.user?.id;
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized 1' });
+        const actualUserId = req.user?.id;
+        if (!actualUserId || actualUserId !== userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
         }
         const newProfile: OrganiserProfile = await prisma.organiserProfile.create({
             data: {
@@ -44,7 +45,7 @@ async function createOrganiserProfile(req: Request, res: Response) {
                 bannerImage: bannerImage,
                 description: description || '',
                 displayEmail: displayEmail,
-                socials: socials || null,
+                socials: socials || {},
                 website: website || null,
                 userId: userId,
             },

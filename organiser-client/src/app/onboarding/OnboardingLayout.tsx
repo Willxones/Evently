@@ -10,7 +10,7 @@ export default function OnboardingLayout() {
         <div>
             <h1>Onboarding</h1>
             {step == 0 && <SignUp setStep={setStep} />}
-            {step == 1 && <OrganiserSetup />}
+            {step == 1 && <OrganiserSetup setStep={setStep} />}
             {step == 2 && <StripeOnboarding />}
         </div>
     );
