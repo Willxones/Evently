@@ -58,4 +58,28 @@ async function createOrganiserProfile(req: Request, res: Response) {
     }
 }
 
-export { createOrganiserProfile };
+// Function to fetch an organiser profile by user ID
+async function getOrganiserProfile(req: Request, res: Response) {
+    try {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const organiserProfile = await prisma.organiserProfile.findUnique({
+            where: { userId },
+        });
+
+        if (!organiserProfile) {
+            return res.status(404).json({ error: 'Organiser profile not found' });
+        }
+
+        return res.status(200).json(organiserProfile);
+    } catch (error) {
+        console.error('Error fetching organiser profile:', error);
+        return res.status(500).json({ error: 'Failed to fetch organiser profile' });
+    }
+}
+
+export { createOrganiserProfile, getOrganiserProfile };
