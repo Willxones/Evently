@@ -2,16 +2,22 @@ FROM node:20.19
 
 WORKDIR /app
 
-COPY package.json ./package.json
+# Only copy package files first to optimize caching
+COPY package*.json ./
 
+# Install dependencies
 RUN npm install
 
-RUN npm install -g nodemon
+# Install tsx globally if needed (optional, can also be dev dep)
+# RUN npm install -g tsx
 
+# Copy the rest of the app
 COPY . .
 
+# Generate Prisma client
 RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD ["nodemon", "dist/server.js"]
+# Use tsx to run the dev server
+CMD ["npm", "run", "dev"]
