@@ -2,6 +2,9 @@ import type { OrganiserProfile } from '../../types/organiser';
 
 async function createProfile(profileData: OrganiserProfile, token: string) {
     try {
+        console.log('Creating organiser profile with data:', profileData);
+        console.log('Using token:', token);
+
         const response = await fetch(import.meta.env.VITE_SERVER_URL + '/organiser', {
             method: 'POST',
             body: JSON.stringify(profileData),

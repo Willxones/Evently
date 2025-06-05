@@ -1,19 +1,19 @@
 type OrganiserProfile = {
+    organiserName: string;
     firstName: string;
     lastName: string;
+    description: string;
     location?: string | null;
-    orgName: string;
     logoImage: string;
     bannerImage: string;
-    description?: string | null;
-    displayEmail: string | null;
-    socials?: {
+    publicEmail: string | null;
+    socialLinks?: {
         twitter?: string | null;
         facebook?: string | null;
         instagram?: string | null;
         linkedin?: string | null;
     } | null;
-    website?: string | null;
+    websiteUrl?: string | null;
     userId: string;
 };
 export type { OrganiserProfile };

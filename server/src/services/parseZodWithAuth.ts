@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { ZodSchema } from 'zod';
 
-import { AuthError } from '../utils/errors/authError.js';
+import { AuthError } from '../utils/errors/AuthError.js';
 
 function parseZodWithAuth(
     zodSchema: ZodSchema,

@@ -15,18 +15,18 @@ export default function OrganiserSetup({ setStep }: OrganiserSetupProps) {
             console.log('User not authenticated');
         } else {
             const profile: OrganiserProfile = {
-                orgName: event.currentTarget.orgName.value,
+                organiserName: event.currentTarget.orgName.value,
                 firstName: event.currentTarget.firstName.value,
                 lastName: event.currentTarget.lastName.value,
+                description: event.currentTarget.description.value,
                 location: event.currentTarget.location.value || null,
                 logoImage: event.currentTarget.logoImage.value,
                 bannerImage: event.currentTarget.bannerImage.value,
-                description: event.currentTarget.description.value || null,
-                displayEmail: event.currentTarget.email.value,
-                socials: {
+                publicEmail: event.currentTarget.email.value || null,
+                socialLinks: {
                     twitter: event.currentTarget.twitter.value || null,
                 },
-                website: event.currentTarget.website.value || null,
+                websiteUrl: event.currentTarget.website.value || null,
                 userId: user.id,
             };
             const response = await createProfile(profile, session.access_token);
