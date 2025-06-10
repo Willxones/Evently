@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { supabase } from '../../utils/supabase.js';
+import { supabase } from '../../utils/connections/supabase.js';
 
 export async function authenticateToken(
     req: Request,
