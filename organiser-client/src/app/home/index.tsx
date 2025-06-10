@@ -9,11 +9,11 @@ export default function Home() {
 
     useEffect(() => {
         const fetchOrganiserProfile = async () => {
-            if (isAuthResolved && user?.id) {
+            if (isAuthResolved && user) {
                 try {
                     const response = await fetch('/api/organiser/get-organiser-profile', {
                         headers: {
-                            // Authorization: `Bearer ${user.token}`,
+                            // Authorization: `Bearer ${user.access_token}`,
                         },
                     });
 
