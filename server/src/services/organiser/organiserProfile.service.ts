@@ -58,7 +58,6 @@ async function createOrganiserProfile(req: Request, res: Response) {
     }
 }
 
-// Function to fetch an organiser profile by user ID
 async function getOrganiserProfile(req: Request, res: Response) {
     try {
         const userId = req.user?.id;
