@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 import { prisma } from '../../utils/prisma.js';
 
-// Function to create an organiser profile
+
 async function createOrganiserProfile(req: Request, res: Response) {
     console.log(req.body);
     try {
@@ -57,7 +57,6 @@ async function createOrganiserProfile(req: Request, res: Response) {
     }
 }
 
-// Function to fetch an organiser profile by user ID
 async function getOrganiserProfile(req: Request, res: Response) {
     try {
         const userId = req.user?.id;
