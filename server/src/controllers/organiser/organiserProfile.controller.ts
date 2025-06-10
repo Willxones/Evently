@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(express.json());
 
 // POST route to create an organiser profile
-router.post('/', authenticateToken, async (req: Request, res: Response) => {
+router.post('/create-organiser-profile', authenticateToken, async (req: Request, res: Response) => {
     await createOrganiserProfile(req, res);
 });
 
