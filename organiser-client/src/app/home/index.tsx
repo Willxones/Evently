@@ -1,42 +1,56 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/UserContext';
 import { useOrganiserContext } from '../../contexts/OrganiserContext';
 import { signOut } from '../../features/auth/signOut';
 
 export default function Home() {
-    const { user, isAuthResolved } = useAuth();
+    const { user, session, isAuthResolved } = useAuth();
     const { organiserProfile, setOrganiserProfile } = useOrganiserContext();
+    const [organiserExists, setOrganiserExists] = useState<null | boolean>(null);
 
     useEffect(() => {
         const fetchOrganiserProfile = async () => {
-            if (isAuthResolved && user) {
+            if (isAuthResolved && user && session) {
                 try {
                     const response = await fetch('/api/organiser/get-organiser-profile', {
                         headers: {
-                            // Authorization: `Bearer ${user.access_token}`,
+                            Authorization: `Bearer ${session.access_token}`,
                         },
                     });
 
                     if (response.ok) {
                         const profile = await response.json();
                         setOrganiserProfile(profile);
+                        setOrganiserExists(true);
+                    } else if (response.status === 404) {
+                        setOrganiserProfile(null);
+                        setOrganiserExists(false);
                     } else {
+                        setOrganiserProfile(null);
+                        setOrganiserExists(null);
                         console.error('Failed to fetch organiser profile');
                     }
                 } catch (error) {
+                    setOrganiserProfile(null);
+                    setOrganiserExists(null);
                     console.error('Error fetching organiser profile:', error);
                 }
             }
         };
 
         fetchOrganiserProfile();
-    }, [isAuthResolved, user, setOrganiserProfile]);
+    }, [isAuthResolved, user, session, setOrganiserProfile]);
 
     return (
         <>
             <h1>Hello {user?.email || 'World!'}</h1>
             {!user ? <a href="/signin">Sign In</a> : <a onClick={signOut}>Sign Out</a>}
-            {organiserProfile && (
+            {organiserExists === false && (
+                <div>
+                    <p>No organiser profile found. Please create one.</p>
+                </div>
+            )}
+            {organiserProfile && organiserExists && (
                 <div>
                     <h2>Organiser Profile</h2>
                     <p>
