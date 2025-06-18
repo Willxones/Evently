@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/UserContext';
 import { useOrganiserContext } from '../../contexts/OrganiserContext';
 import { signOut } from '../../features/auth/signOut';
+import { snakeToCamel } from '../../utils/case';
 
 export default function Home() {
     const { user, session, isAuthResolved } = useAuth();
@@ -20,7 +21,7 @@ export default function Home() {
 
                     if (response.ok) {
                         const profile = await response.json();
-                        setOrganiserProfile(profile);
+                        setOrganiserProfile(snakeToCamel(profile));
                         setOrganiserExists(true);
                     } else if (response.status === 404) {
                         setOrganiserProfile(null);
