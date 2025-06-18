@@ -13,11 +13,14 @@ export default function Home() {
         const fetchOrganiserProfile = async () => {
             if (isAuthResolved && user && session) {
                 try {
-                    const response = await fetch('/api/organiser/get-organiser-profile', {
-                        headers: {
-                            Authorization: `Bearer ${session.access_token}`,
-                        },
-                    });
+                    const response = await fetch(
+                        `${import.meta.env.VITE_SERVER_URL}/organiser/get-organiser-profile`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${session.access_token}`,
+                            },
+                        }
+                    );
 
                     if (response.ok) {
                         const profile = await response.json();
