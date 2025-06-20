@@ -24,7 +24,19 @@ export default function Home() {
 
                     if (response.ok) {
                         const profile = await response.json();
-                        setOrganiserProfile(snakeToCamel(profile));
+                        const camelProfile = snakeToCamel(profile);
+
+                        setOrganiserProfile({
+                            firstName: camelProfile.firstName,
+                            lastName: camelProfile.lastName,
+                            orgName: camelProfile.organiserName,
+                            displayEmail: camelProfile.publicEmail,
+                            description: camelProfile.description,
+                            logoImage: camelProfile.logoImage,
+                            bannerImage: camelProfile.bannerImage,
+                            socials: camelProfile.socialLinks,
+                            website: camelProfile.websiteUrl,
+                        });
                         setOrganiserExists(true);
                     } else if (response.status === 404) {
                         setOrganiserProfile(null);
