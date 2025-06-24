@@ -1,38 +1,17 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { useOrganiserProfileInternal } from '../hooks/useOrganiserProfileInternal';
 
-interface OrganiserProfile {
-    firstName: string;
-    lastName: string;
-    orgName: string;
-    displayEmail: string;
-    description: string;
-    logoImage: string;
-    bannerImage: string;
-    socials?: Record<string, string>;
-    website?: string;
-}
-
-interface OrganiserContextType {
-    organiserProfile: OrganiserProfile | null;
-    setOrganiserProfile: React.Dispatch<React.SetStateAction<OrganiserProfile | null>>;
-}
-
-const OrganiserContext = createContext<OrganiserContextType | undefined>(undefined);
+const OrganiserContext = createContext<ReturnType<typeof useOrganiserProfileInternal> | undefined>(
+    undefined
+);
 
 export const OrganiserProvider = ({ children }: { children: React.ReactNode }) => {
-    const [organiserProfile, setOrganiserProfile] = useState<OrganiserProfile | null>(null);
-
-    return (
-        <OrganiserContext.Provider value={{ organiserProfile, setOrganiserProfile }}>
-            {children}
-        </OrganiserContext.Provider>
-    );
+    const organiser = useOrganiserProfileInternal();
+    return <OrganiserContext.Provider value={organiser}>{children}</OrganiserContext.Provider>;
 };
 
 export const useOrganiserContext = () => {
     const context = useContext(OrganiserContext);
-    if (!context) {
-        throw new Error('useOrganiserContext must be used within an OrganiserProvider');
-    }
+    if (!context) throw new Error('useOrganiserContext must be used within an OrganiserProvider');
     return context;
 };

@@ -20,6 +20,20 @@ const organiserProfileSchema = z.object({
     userId: z.string(),
 });
 
+function snakeToCamel(obj: any): any {
+    if (Array.isArray(obj)) {
+        return obj.map(snakeToCamel);
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.fromEntries(
+            Object.entries(obj).map(([key, value]) => [
+                key.replace(/_([a-z])/g, (_, c) => c.toUpperCase()),
+                snakeToCamel(value),
+            ])
+        );
+    }
+    return obj;
+}
+
 async function createOrganiserProfile(req: Request, res: Response) {
     try {
         console.log('Creating organiser profile with data:', req.body);
@@ -76,7 +90,10 @@ async function getOrganiserProfile(req: Request, res: Response) {
             return res.status(404).json({ error: 'Organiser profile not found' });
         }
 
-        return res.status(200).json(organiserProfile);
+        // Convert to camelCase before sending to client
+        const camelProfile = snakeToCamel(organiserProfile);
+
+        return res.status(200).json(camelProfile);
     } catch (error) {
         console.error('Error fetching organiser profile:', error);
         return res.status(500).json({ error: 'Failed to fetch organiser profile' });
