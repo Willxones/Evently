@@ -4,18 +4,18 @@ import { useOrganiserContext } from '../../contexts/OrganiserContext';
 
 export default function Home() {
     const { user } = useAuth();
-    const { organiserProfile, organiserExists } = useOrganiserContext();
+    const { organiserProfile, isOrganiserProfileResolved } = useOrganiserContext();
 
     return (
         <>
             <h1>Hello {user?.email || 'World!'}</h1>
             {!user ? <a href="/signin">Sign In</a> : <a onClick={signOut}>Sign Out</a>}
-            {organiserExists === false && (
+            {isOrganiserProfileResolved === false && (
                 <div>
                     <p>No organiser profile found. Please create one.</p>
                 </div>
             )}
-            {organiserProfile && organiserExists && (
+            {organiserProfile && isOrganiserProfileResolved && (
                 <div>
                     <h2>Organiser Profile</h2>
                     <p>

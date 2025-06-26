@@ -77,10 +77,8 @@ async function getOrganiserProfile(req: Request, res: Response) {
         if (!organiserProfile) {
             return res.status(404).json({ error: 'Organiser profile not found' });
         }
-
-        // Convert to camelCase before sending to client
         const camelProfile = snakeToCamel(organiserProfile);
-
+        
         return res.status(200).json(camelProfile);
     } catch (error) {
         console.error('Error fetching organiser profile:', error);

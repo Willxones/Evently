@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/UserContext';
 export function useOrganiserProfileInternal() {
     const { user, session, isAuthResolved } = useAuth();
     const [organiserProfile, setOrganiserProfile] = useState<any>(null);
-    const [organiserExists, setOrganiserExists] = useState<null | boolean>(null);
+    const [isOrganiserProfileResolved, setIsOrganiserProfileResolved] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchOrganiserProfile = async () => {
@@ -32,25 +32,25 @@ export function useOrganiserProfileInternal() {
                             socials: profile.socialLinks,
                             website: profile.websiteUrl,
                         });
-                        setOrganiserExists(true);
                     } else if (response.status === 404) {
                         setOrganiserProfile(null);
-                        setOrganiserExists(false);
                     } else {
                         setOrganiserProfile(null);
-                        setOrganiserExists(null);
                         console.error('Failed to fetch organiser profile');
                     }
                 } catch (error) {
                     setOrganiserProfile(null);
-                    setOrganiserExists(null);
                     console.error('Error fetching organiser profile:', error);
+                } finally {
+                    setIsOrganiserProfileResolved(true);
                 }
+            } else if (isAuthResolved && !user) {
+                setIsOrganiserProfileResolved(true);
             }
         };
 
         fetchOrganiserProfile();
     }, [isAuthResolved, user, session]);
 
-    return { organiserProfile, setOrganiserProfile, organiserExists, setOrganiserExists };
+    return { organiserProfile, setOrganiserProfile, isOrganiserProfileResolved };
 }
