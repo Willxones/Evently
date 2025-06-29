@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/UserContext';
+import type { OrganiserProfile } from '../types/organiser';
 
 export function useOrganiserProfileInternal() {
     const { user, session, isAuthResolved } = useAuth();
-    const [organiserProfile, setOrganiserProfile] = useState<any>(null);
+    const [organiserProfile, setOrganiserProfile] = useState<OrganiserProfile | null>(null);
     const [isOrganiserProfileResolved, setIsOrganiserProfileResolved] = useState<boolean>(false);
 
     useEffect(() => {
@@ -24,16 +25,16 @@ export function useOrganiserProfileInternal() {
                         setOrganiserProfile({
                             firstName: profile.firstName,
                             lastName: profile.lastName,
-                            orgName: profile.organiserName,
-                            displayEmail: profile.publicEmail,
+                            organiserName: profile.organiserName,
+                            publicEmail: profile.publicEmail,
                             description: profile.description,
                             logoImage: profile.logoImage,
                             bannerImage: profile.bannerImage,
-                            socials: profile.socialLinks,
-                            website: profile.websiteUrl,
+                            socialLinks: profile.socialLinks,
+                            websiteUrl: profile.websiteUrl,
+                            userId: profile.userId,
+                            location: profile.location || null,
                         });
-                    } else if (response.status === 404) {
-                        setOrganiserProfile(null);
                     } else {
                         setOrganiserProfile(null);
                         console.error('Failed to fetch organiser profile');

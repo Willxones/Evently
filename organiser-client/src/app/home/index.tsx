@@ -5,7 +5,6 @@ import { useOrganiserContext } from '../../contexts/OrganiserContext';
 export default function Home() {
     const { user } = useAuth();
     const { organiserProfile, isOrganiserProfileResolved } = useOrganiserContext();
-
     return (
         <>
             <h1>Hello {user?.email || 'World!'}</h1>
@@ -21,8 +20,8 @@ export default function Home() {
                     <p>
                         Name: {organiserProfile.firstName} {organiserProfile.lastName}
                     </p>
-                    <p>Organisation: {organiserProfile.orgName}</p>
-                    <p>Email: {organiserProfile.displayEmail}</p>
+                    <p>Organisation: {organiserProfile.organiserName}</p>
+                    <p>Email: {organiserProfile.publicEmail}</p>
                     <p>Description: {organiserProfile.description}</p>
                 </div>
             )}
