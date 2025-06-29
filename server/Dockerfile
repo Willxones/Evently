@@ -14,9 +14,6 @@ RUN npm install
 # Copy the rest of the app
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
 EXPOSE 3000
 
 # Use tsx to run the dev server
