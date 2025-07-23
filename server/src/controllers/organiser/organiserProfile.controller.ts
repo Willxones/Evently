@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
+import { createEvent } from '../../services/organiser/event.services.js';
 import {
     createOrganiserProfile,
     getOrganiserProfile,
@@ -24,5 +25,10 @@ router.post('/', authenticateToken, async (req: Request, res: Response) => {
 router.get('/get-organiser-profile', authenticateToken, async (req: Request, res: Response) => {
     await getOrganiserProfile(req, res);
 });
+
+router.post('/create-event', authenticateToken, async (req: Request, res: Response) => {
+    await createEvent(req, res);
+});
+
 
 export default router;
