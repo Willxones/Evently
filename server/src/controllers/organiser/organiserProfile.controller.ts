@@ -2,12 +2,8 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
-import { createEvent } from '../../services/organiser/event.services.js';
-import {
-    createOrganiserProfile,
-    getOrganiserProfile,
-} from '../../services/organiser/organiserProfile.service.js';
-import { getEvents } from '../../services/organiser/event.services.js';
+import { createOrganiserProfile, getOrganiserProfile } from '../../services/organiser/organiserProfile.service.js';
+import { createEvent, getEvents, getEventsByOrganiserId } from '../../services/organiser/event.services.js';
 
 const router = express.Router();
 
@@ -35,9 +31,9 @@ router.get('/get-events', authenticateToken, async (req: Request, res: Response)
     await getEvents(req, res);
 });
 
-// router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
-//     await getEventsByOrganiserId(req, res);
-// });
+router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
+    await getEventsByOrganiserId(req, res);
+});
 
 
 export default router;
