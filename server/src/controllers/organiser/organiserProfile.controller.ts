@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
 import { createOrganiserProfile, getOrganiserProfile } from '../../services/organiser/organiserProfile.service.js';
-import { createEvent, getEvents, getEventsByOrganiserId } from '../../services/organiser/event.services.js';
+import { createEvent, getEvents, getEventsByOrganiserId, deleteEvent, updateEvent } from '../../services/organiser/event.services.js';
 
 const router = express.Router();
 
@@ -34,6 +34,11 @@ router.get('/get-events', authenticateToken, async (req: Request, res: Response)
 router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
     await getEventsByOrganiserId(req, res);
 });
-
+router.delete('/delete-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await deleteEvent(req, res);
+});
+router.put('/update-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await updateEvent(req, res);
+});
 
 export default router;
