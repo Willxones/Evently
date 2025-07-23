@@ -7,6 +7,7 @@ import {
     createOrganiserProfile,
     getOrganiserProfile,
 } from '../../services/organiser/organiserProfile.service.js';
+import { getEvents } from '../../services/organiser/event.services.js';
 
 const router = express.Router();
 
@@ -29,6 +30,14 @@ router.get('/get-organiser-profile', authenticateToken, async (req: Request, res
 router.post('/create-event', authenticateToken, async (req: Request, res: Response) => {
     await createEvent(req, res);
 });
+
+router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {
+    await getEvents(req, res);
+});
+
+// router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
+//     await getEventsByOrganiserId(req, res);
+// });
 
 
 export default router;
