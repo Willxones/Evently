@@ -81,4 +81,15 @@ async function getEvents(req: Request, res: Response){
     }
 }
 
-export { createEvent, getEvents };
+async function getEventsByOrganiserId(req: Request, res: Response) {
+    try {
+        const { organiserId } = req.params;
+        const events = await pool.query('SELECT * FROM public.event WHERE organiser_id = $1', [organiserId]);
+        return res.status(200).json(events.rows);
+    } catch (error) {
+        console.error('Error fetching events by organiser ID:', error);
+        return res.status(500).json({ error: 'Failed to fetch events by organiser ID' });
+    }
+}
+
+export { createEvent, getEvents, getEventsByOrganiserId };
