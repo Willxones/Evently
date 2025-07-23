@@ -2,7 +2,6 @@ import cors from 'cors';
 import express from 'express';
 
 import organiser from './controllers/organiser/organiserProfile.controller.js';
-// import stripeController from './controllers/stripe/stripeController.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,7 +16,6 @@ app.use(
 );
 
 app.use('/organiser', organiser);
-// app.use('/stripe', stripeController);
 
 app.get('/', (req, res) => {
     res.send('Hello, World! Welcome to the Evently API!');
