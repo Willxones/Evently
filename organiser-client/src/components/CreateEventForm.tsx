@@ -35,8 +35,12 @@ export default function CreateEventForm({ onEventCreated, onCancel }: CreateEven
             date: new Date(formData.get('date') as string + ':00').toISOString(),
             organiserId: organiserProfile.id || '',
             };
+             const createdEvent = await createEvent(eventData, session.access_token);
 
-            await createEvent(eventData, session.access_token);
+             if (createdEvent && createdEvent.id) {
+                 window.open(`/events/${createdEvent.id}`, '_blank');
+             }
+
             onEventCreated();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to create event');
