@@ -3,7 +3,14 @@ import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
 import { createOrganiserProfile, getOrganiserProfile } from '../../services/organiser/organiserProfile.service.js';
-import { createEvent, getEvents, getEventsByOrganiserId, deleteEvent, updateEvent } from '../../services/organiser/event.services.js';
+import {
+    createEvent,
+    getEvents,
+    getEventsByOrganiserId,
+    deleteEvent,
+    updateEvent,
+    getEventByEventId,
+} from '../../services/organiser/event.services.js';
 
 const router = express.Router();
 
@@ -25,6 +32,10 @@ router.get('/get-organiser-profile', authenticateToken, async (req: Request, res
 
 router.post('/create-event', authenticateToken, async (req: Request, res: Response) => {
     await createEvent(req, res);
+});
+
+router.get('/get-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await getEventByEventId(req, res);
 });
 
 router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {

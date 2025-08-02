@@ -23,6 +23,7 @@ export function useOrganiserProfileInternal() {
                     if (response.ok) {
                         const profile = await response.json();
                         setOrganiserProfile({
+                            id: profile.id,
                             firstName: profile.firstName,
                             lastName: profile.lastName,
                             organiserName: profile.organiserName,

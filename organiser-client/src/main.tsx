@@ -8,6 +8,7 @@ import SignIn from './app/auth/SignIn';
 import { UserProvider } from './contexts/UserContext';
 import OnboardingLayout from './app/onboarding/OnboardingLayout';
 import { OrganiserProvider } from './contexts/OrganiserContext';
+import EventPage from './pages/eventPage';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -20,6 +21,7 @@ createRoot(document.getElementById('root')!).render(
                         </Route>
                         <Route path="/signin" element={<SignIn />} />
                         <Route path="/onboarding" element={<OnboardingLayout />} />
+                        <Route path="/events/:eventId" element={<EventPage />} />
                     </Routes>
                 </BrowserRouter>
             </OrganiserProvider>
