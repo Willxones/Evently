@@ -87,10 +87,15 @@ export default function EventPage() {
     return (
         <div style={{ padding: '20px', margin: '0 auto' }}>
             <h1>{event.title}</h1>
-            <p><strong>Description:</strong> {event.description}</p>
-            <p><strong>Location:</strong> {event.location}</p>
-            <p><strong>Date:</strong> {formatData(event.date)}</p>
-            <p><strong>Organiser ID:</strong> {event.organiserId}</p>
+            <p>
+                <strong>Description:</strong> {event.description}
+            </p>
+            <p>
+                <strong>Location:</strong> {event.location}
+            </p>
+            <p>
+                <strong>Date:</strong> {formatData(event.date)}
+            </p>
         </div>
     );
 }
