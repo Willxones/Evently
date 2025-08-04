@@ -26,28 +26,31 @@ async function createTicketType(req: Request, res: Response) {
         const parsed = ticketTypeSchema.safeParse(req.body);
         if (!parsed.success) {
             console.error('Validation failed:', parsed.error);
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Validation failed',
-                details: parsed.error.errors 
+                details: parsed.error.errors,
             });
         }
 
         const receivedTicketData = parsed.data;
 
-        const eventCheck = await pool.query(`
+        const eventCheck = await pool.query(
+            `
             SELECT e.id, e.organiser_id 
             FROM public.event e
             JOIN public.organiser_profile op ON e.organiser_id = op.id
             WHERE e.id = $1 AND op.user_id = $2
-        `, [receivedTicketData.eventId, req.user.id]);
-        
+        `,
+            [receivedTicketData.eventId, req.user.id]
+        );
+
         if (eventCheck.rows.length === 0) {
             console.error('Event not found or not owned by user');
             return res.status(404).json({ error: 'Event not found or access denied' });
         }
-        
+
         const id = cuid();
-        
+
         const newTicketType = await pool.query(
             'INSERT INTO public.ticket_type (id, event_id, name, price, quantity) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [
@@ -58,22 +61,56 @@ async function createTicketType(req: Request, res: Response) {
                 receivedTicketData.quantity,
             ]
         );
-        
+
         console.log('Created new ticket type:', newTicketType.rows[0]);
         return res.status(201).json(snakeToCamel(newTicketType.rows[0]));
-        
     } catch (error: any) {
         console.error('Error creating ticket type:', error);
-        
+
         if (error.code === '23505') {
             return res.status(400).json({ error: 'Ticket type already exists' });
         }
         if (error.code === '23503') {
             return res.status(400).json({ error: 'Invalid event ID' });
         }
-        
+
         return res.status(500).json({ error: 'Failed to create ticket type' });
     }
 }
 
-export { createTicketType };
+async function getTicketTypesByEventId(req: Request, res: Response) {
+    try {
+        const { eventId } = req.params;
+
+        if (!req.user?.id) {
+            return res.status(401).json({ error: 'Authentication required' });
+        }
+
+        // Verify the event belongs to the user
+        const eventCheck = await pool.query(
+            `
+            SELECT e.id 
+            FROM public.event e
+            JOIN public.organiser_profile op ON e.organiser_id = op.id
+            WHERE e.id = $1 AND op.user_id = $2
+        `,
+            [eventId, req.user.id]
+        );
+
+        if (eventCheck.rows.length === 0) {
+            return res.status(404).json({ error: 'Event not found or access denied' });
+        }
+
+        const ticketTypes = await pool.query(
+            'SELECT * FROM public.ticket_type WHERE event_id = $1',
+            [eventId]
+        );
+
+        return res.status(200).json(snakeToCamel(ticketTypes.rows));
+    } catch (error) {
+        console.error('Error fetching ticket types:', error);
+        return res.status(500).json({ error: 'Failed to fetch ticket types' });
+    }
+}
+
+export { createTicketType, getTicketTypesByEventId };
