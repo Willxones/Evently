@@ -1,8 +1,12 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 
+import { getTicketTypesByEventId } from '../../services/organiser/ticketType.services.js';
 import { authenticateToken } from '../../middlewares/shared/auth.js';
-import { createOrganiserProfile, getOrganiserProfile } from '../../services/organiser/organiserProfile.service.js';
+import {
+    createOrganiserProfile,
+    getOrganiserProfile,
+} from '../../services/organiser/organiserProfile.service.js';
 import {
     createEvent,
     getEvents,
@@ -54,6 +58,9 @@ router.put('/update-event/:eventId', authenticateToken, async (req: Request, res
 });
 router.post('/create-ticket-type', authenticateToken, async (req: Request, res: Response) => {
     await createTicketType(req, res);
+});
+router.get('/get-ticket-types/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await getTicketTypesByEventId(req, res);
 });
 
 export default router;
