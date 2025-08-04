@@ -86,7 +86,6 @@ async function getTicketTypesByEventId(req: Request, res: Response) {
             return res.status(401).json({ error: 'Authentication required' });
         }
 
-        // Verify the event belongs to the user
         const eventCheck = await pool.query(
             `
             SELECT e.id 
