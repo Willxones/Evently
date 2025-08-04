@@ -1,21 +1,11 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 
-import { getTicketTypesByEventId } from '../../services/organiser/ticketType.services.js';
 import { authenticateToken } from '../../middlewares/shared/auth.js';
 import {
     createOrganiserProfile,
     getOrganiserProfile,
 } from '../../services/organiser/organiserProfile.service.js';
-import {
-    createEvent,
-    getEvents,
-    getEventsByOrganiserId,
-    deleteEvent,
-    updateEvent,
-    getEventByEventId,
-} from '../../services/organiser/event.services.js';
-import { createTicketType } from '../../services/organiser/ticketType.services.js';
 
 const router = express.Router();
 
@@ -27,40 +17,13 @@ router.use(
         allowedHeaders: ['Content-Type', 'authorization'],
     })
 );
+
 router.post('/', authenticateToken, async (req: Request, res: Response) => {
     await createOrganiserProfile(req, res);
 });
 
 router.get('/get-organiser-profile', authenticateToken, async (req: Request, res: Response) => {
     await getOrganiserProfile(req, res);
-});
-
-router.post('/create-event', authenticateToken, async (req: Request, res: Response) => {
-    await createEvent(req, res);
-});
-
-router.get('/get-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
-    await getEventByEventId(req, res);
-});
-
-router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {
-    await getEvents(req, res);
-});
-
-router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
-    await getEventsByOrganiserId(req, res);
-});
-router.delete('/delete-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
-    await deleteEvent(req, res);
-});
-router.put('/update-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
-    await updateEvent(req, res);
-});
-router.post('/create-ticket-type', authenticateToken, async (req: Request, res: Response) => {
-    await createTicketType(req, res);
-});
-router.get('/get-ticket-types/:eventId', authenticateToken, async (req: Request, res: Response) => {
-    await getTicketTypesByEventId(req, res);
 });
 
 export default router;
