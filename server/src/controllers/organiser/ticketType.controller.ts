@@ -26,4 +26,12 @@ router.get('/get-ticket-types/:eventId', authenticateToken, async (req: Request,
     await getTicketTypesByEventId(req, res);
 });
 
+router.delete(
+    '/delete-ticket-types/:Id',
+    authenticateToken,
+    async (req: Request, res: Response) => {
+        await getTicketTypesByEventId(req, res);
+    }
+);
+
 export default router;
