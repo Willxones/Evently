@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import { useAuth } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { getTicketTypesByEventId } from '../features/tickets/getTicketTypeByEventId';
+import { deleteTicketType } from '../features/tickets/deleteTicketType';
 import CreateTicketForm from '../components/CreateTicketForm';
 
 export default function EventPage() {
@@ -15,6 +16,7 @@ export default function EventPage() {
     const [isLoadingTickets, setIsLoadingTickets] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showCreateTicketForm, setShowCreateTicketForm] = useState(false);
+    const [deletingTicketId, setDeletingTicketId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -115,6 +117,35 @@ export default function EventPage() {
         }
     };
 
+    const handleTicketDeleted = async () => {
+        if (event?.id && session) {
+            setIsLoadingTickets(true);
+            try {
+                const tickets = await getTicketTypesByEventId(event.id, session.access_token);
+                setTicketTypes(tickets);
+            } catch (error) {
+                console.error('Failed to refresh ticket types:', error);
+            } finally {
+                setIsLoadingTickets(false);
+            }
+        }
+    };
+
+    const handleDeleteTicket = async (ticketId: string) => {
+        if (!session) return;
+
+        setDeletingTicketId(ticketId);
+        try {
+            await deleteTicketType(ticketId, session.access_token);
+            handleTicketDeleted();
+        } catch (error) {
+            console.error('Failed to delete ticket type:', error);
+            alert('Failed to delete ticket type. Please try again.');
+        } finally {
+            setDeletingTicketId(null);
+        }
+    };
+
     if (!isAuthResolved || isLoading) {
         return <div>Loading...</div>;
     }
@@ -153,15 +184,32 @@ export default function EventPage() {
                                     style={{
                                         border: '1px solid #ddd',
                                         padding: '15px',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
                                     }}
                                 >
-                                    <h3>{ticket.name}</h3>
-                                    <p>
-                                        <strong>Price:</strong> {formatPrice(ticket.price)}
-                                    </p>
-                                    <p>
-                                        <strong>Quantity:</strong> {ticket.quantity}
-                                    </p>
+                                    <div>
+                                        <h3>{ticket.name}</h3>
+                                        <p>
+                                            <strong>Price:</strong> {formatPrice(ticket.price)}
+                                        </p>
+                                        <p>
+                                            <strong>Quantity:</strong> {ticket.quantity}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDeleteTicket(ticket.id)}
+                                        disabled={deletingTicketId === ticket.id}
+                                        style={{
+                                            backgroundColor: '#dc3545',
+                                            color: 'white',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        {deletingTicketId === ticket.id ? 'Deleting...' : 'Delete'}
+                                    </button>
                                 </div>
                             ))}
                         </div>
