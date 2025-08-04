@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import { useAuth } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { getTicketTypesByEventId } from '../features/tickets/getTicketTypeByEventId';
+import CreateTicketForm from '../components/CreateTicketForm';
 
 export default function EventPage() {
     const { eventId } = useParams<{ eventId: string }>();
@@ -13,6 +14,7 @@ export default function EventPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingTickets, setIsLoadingTickets] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showCreateTicketForm, setShowCreateTicketForm] = useState(false);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -98,6 +100,21 @@ export default function EventPage() {
         }).format(price / 100);
     };
 
+    const handleTicketCreated = async () => {
+        setShowCreateTicketForm(false);
+        if (event?.id && session) {
+            setIsLoadingTickets(true);
+            try {
+                const tickets = await getTicketTypesByEventId(event.id, session.access_token);
+                setTicketTypes(tickets);
+            } catch (error) {
+                console.error('Failed to refresh ticket types:', error);
+            } finally {
+                setIsLoadingTickets(false);
+            }
+        }
+    };
+
     if (!isAuthResolved || isLoading) {
         return <div>Loading...</div>;
     }
@@ -150,7 +167,16 @@ export default function EventPage() {
                         </div>
                     )}
                 </div>
-                <button>Add tickets</button>
+
+                {!showCreateTicketForm ? (
+                    <button onClick={() => setShowCreateTicketForm(true)}>Create Ticket</button>
+                ) : (
+                    <CreateTicketForm
+                        eventId={event.id!}
+                        onTicketCreated={handleTicketCreated}
+                        onCancel={() => setShowCreateTicketForm(false)}
+                    />
+                )}
             </div>
         </div>
     );
