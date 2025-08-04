@@ -5,6 +5,7 @@ import { authenticateToken } from '../../middlewares/shared/auth.js';
 import {
     createTicketType,
     getTicketTypesByEventId,
+    deleteTicketType,
 } from '../../services/organiser/ticketType.services.js';
 
 const router = express.Router();
@@ -27,10 +28,10 @@ router.get('/get-ticket-types/:eventId', authenticateToken, async (req: Request,
 });
 
 router.delete(
-    '/delete-ticket-types/:Id',
+    '/delete-ticket-type/:ticketId',
     authenticateToken,
     async (req: Request, res: Response) => {
-        await getTicketTypesByEventId(req, res);
+        await deleteTicketType(req, res);
     }
 );
 
