@@ -2,7 +2,14 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
-import { createEvent, getEvents, getEventsByOrganiserId, deleteEvent, updateEvent } from '../../services/organiser/event.services.js';
+import {
+    createEvent,
+    getEvents,
+    getEventsByOrganiserId,
+    deleteEvent,
+    updateEvent,
+    getEventByEventId,
+} from '../../services/organiser/event.services.js';
 
 const router = express.Router();
 
@@ -17,6 +24,10 @@ router.use(
 
 router.post('/create-event', authenticateToken, async (req: Request, res: Response) => {
     await createEvent(req, res);
+});
+
+router.get('/get-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await getEventByEventId(req, res);
 });
 
 router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {

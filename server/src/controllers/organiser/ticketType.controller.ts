@@ -1,8 +1,11 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
-import { createTicketType } from '../../services/organiser/ticketType.services.js';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
+import {
+    createTicketType,
+    getTicketTypesByEventId,
+} from '../../services/organiser/ticketType.services.js';
 
 const router = express.Router();
 
@@ -14,6 +17,13 @@ router.use(
         allowedHeaders: ['Content-Type', 'authorization'],
     })
 );
+
 router.post('/create-ticket-type', authenticateToken, async (req: Request, res: Response) => {
     await createTicketType(req, res);
 });
+
+router.get('/get-ticket-types/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await getTicketTypesByEventId(req, res);
+});
+
+export default router;
