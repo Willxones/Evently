@@ -20,8 +20,6 @@ export default function EventPage() {
 
     useEffect(() => {
         const fetchEvent = async () => {
-            console.log('EventId:', eventId);
-            console.log('Session:', session);
             console.log('Auth resolved:', isAuthResolved);
             if (!isAuthResolved) {
                 return;
