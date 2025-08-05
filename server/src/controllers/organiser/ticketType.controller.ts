@@ -6,6 +6,7 @@ import {
     createTicketType,
     getTicketTypesByEventId,
     deleteTicketType,
+    updateTicketType,
 } from '../../services/organiser/ticketType.services.js';
 
 const router = express.Router();
@@ -32,6 +33,13 @@ router.delete(
     authenticateToken,
     async (req: Request, res: Response) => {
         await deleteTicketType(req, res);
+    }
+);
+router.put(
+    '/update-ticket-type/:ticketId',
+    authenticateToken,
+    async (req: Request, res: Response) => {
+        await updateTicketType(req, res);
     }
 );
 
