@@ -33,15 +33,14 @@ router.get('/get-event/:eventId', authenticateToken, async (req: Request, res: R
 router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {
     await getEvents(req, res);
 });
-
 router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
     await getEventsByOrganiserId(req, res);
 });
-router.delete('/delete-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
-    await deleteEvent(req, res);
-});
 router.put('/update-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
     await updateEvent(req, res);
+});
+router.delete('/delete-event/:eventId', authenticateToken, async (req: Request, res: Response) => {
+    await deleteEvent(req, res);
 });
 
 export default router;

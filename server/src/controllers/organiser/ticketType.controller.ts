@@ -22,23 +22,21 @@ router.use(
 router.post('/create-ticket-type', authenticateToken, async (req: Request, res: Response) => {
     await createTicketType(req, res);
 });
-
 router.get('/get-ticket-types/:eventId', authenticateToken, async (req: Request, res: Response) => {
     await getTicketTypesByEventId(req, res);
 });
-
-router.delete(
-    '/delete-ticket-type/:ticketId',
-    authenticateToken,
-    async (req: Request, res: Response) => {
-        await deleteTicketType(req, res);
-    }
-);
 router.put(
     '/update-ticket-type/:ticketId',
     authenticateToken,
     async (req: Request, res: Response) => {
         await updateTicketType(req, res);
+    }
+);
+router.delete(
+    '/delete-ticket-type/:ticketId',
+    authenticateToken,
+    async (req: Request, res: Response) => {
+        await deleteTicketType(req, res);
     }
 );
 
