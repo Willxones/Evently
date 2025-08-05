@@ -2,10 +2,8 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
-import {
-    createOrganiserProfile,
-    getOrganiserProfile,
-} from '../../services/organiser/organiserProfile.service.js';
+import { createOrganiserProfile } from '../../services/organiser/createOrganiserProfile.service.js';
+import { getOrganiserProfile } from '../../services/organiser/getOrganiserProfile.service.js';
 
 const router = express.Router();
 
