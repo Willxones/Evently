@@ -9,7 +9,7 @@ import {
     deleteEvent,
     updateEvent,
     getEventByEventId,
-} from '../../services/organiser/event.services.js';
+} from '../../services/event/event.services.js';
 
 const router = express.Router();
 
