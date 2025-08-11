@@ -6,7 +6,7 @@ import { authenticateToken } from '../../middlewares/shared/auth.js';
 import { createTicketType } from '../../services/tickets/createTicketType.service.js';
 import { getTicketTypesByEventId } from '../../services/tickets/getTicketType.service.js';
 import { deleteTicketType } from '../../services/tickets/deleteTicketType.service.js';
-import { updateTicketType } from '../../services/tickets/updateticketType.service.js';
+import { updateTicketType } from '../../services/tickets/updateTicketType.service.js';
 
 const router = express.Router();
 
