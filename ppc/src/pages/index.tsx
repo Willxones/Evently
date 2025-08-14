@@ -3,7 +3,6 @@ import { MobileDashboardHeader } from '../components/custom/MobileDashboardHeade
 export default function HomePage() {
     return (
         <div>
-            <div className="w-full h-64 bg-blue-500"></div>
             <MobileDashboardHeader />
         </div>
     );
