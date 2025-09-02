@@ -20,6 +20,9 @@ router.use(
 router.post('/', authenticateToken, async (req: Request, res: Response) => {
     await createOrganiserProfile(req, res);
 });
+
 router.get('/get-organiser-profile', authenticateToken, async (req: Request, res: Response) => {
     await getOrganiserProfile(req, res);
 });
+
+export default router;
