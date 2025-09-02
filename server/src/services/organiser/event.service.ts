@@ -14,10 +14,6 @@ const eventSchema = z.object({
 
 async function createEvent(req: Request, res: Response) {
     try {
-        console.log('Creating event', req.body);
-        console.log('Authenticated user:', req.user);
-        console.log('OrganiserId received:', JSON.stringify(req.body.organiserId));
-
         const parsed = eventSchema.safeParse(req.body);
         if (!parsed.success) {
             console.log('Schema validation failed:', parsed.error);
@@ -27,11 +23,6 @@ async function createEvent(req: Request, res: Response) {
         const receivedEventData = parsed.data;
         console.log('Parsed organiserId:', JSON.stringify(receivedEventData.organiserId));
 
-        if (!req.user?.id) {
-            console.log('No authenticated user found');
-            return res.status(401).json({ error: 'Authentication required' });
-        }
-
         if (!receivedEventData.organiserId || receivedEventData.organiserId.trim() === '') {
             console.log('Empty organiserId provided');
             return res.status(400).json({ error: 'Organiser ID is required and cannot be empty' });
@@ -39,7 +30,7 @@ async function createEvent(req: Request, res: Response) {
 
         const organiserCheck = await pool.query(
             'SELECT id FROM public.organiser_profile WHERE id = $1 AND user_id = $2',
-            [receivedEventData.organiserId, req.user.id]
+            [receivedEventData.organiserId, req.user!.id]
         );
 
         if (organiserCheck.rows.length === 0) {
@@ -70,7 +61,7 @@ async function createEvent(req: Request, res: Response) {
     }
 }
 
-async function getEvents(req: Request, res: Response) {
+async function getAllEvents(req: Request, res: Response) {
     try {
         const events = await pool.query('SELECT * FROM public.event');
         return res.status(200).json(events.rows);
@@ -142,4 +133,4 @@ async function updateEvent(req: Request, res: Response) {
     }
 }
 
-export { createEvent, getEvents, getEventsByOrganiserId, deleteEvent, updateEvent };
+export { createEvent, getAllEvents, getEventsByOrganiserId, deleteEvent, updateEvent };

@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import { authenticateToken } from '../../middlewares/shared/auth.js';
 import {
     createEvent,
-    getEvents,
+    getAllEvents,
     getEventsByOrganiserId,
     deleteEvent,
     updateEvent,
@@ -26,7 +26,7 @@ router.post('/create-event', authenticateToken, async (req: Request, res: Respon
 });
 
 router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {
-    await getEvents(req, res);
+    await getAllEvents(req, res);
 });
 
 router.get('/get-events/:organiserId', authenticateToken, async (req: Request, res: Response) => {
