@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 
 import { pool } from '../../utils/connections/pg.js';
-import { AuthError } from '../../utils/errors/AuthError.js';
 
 const eventSchema = z.object({
     title: z.string(),
@@ -45,8 +44,8 @@ async function createEvent(req: Request, res: Response) {
 
         if (organiserCheck.rows.length === 0) {
             console.log('Organiser profile not found or unauthorized');
-            return res.status(403).json({ 
-                error: 'Unauthorized: Invalid organiser ID or organiser profile does not belong to authenticated user' 
+            return res.status(403).json({
+                error: 'Unauthorized: Invalid organiser ID or organiser profile does not belong to authenticated user',
             });
         }
 
@@ -71,7 +70,7 @@ async function createEvent(req: Request, res: Response) {
     }
 }
 
-async function getEvents(req: Request, res: Response){
+async function getEvents(req: Request, res: Response) {
     try {
         const events = await pool.query('SELECT * FROM public.event');
         return res.status(200).json(events.rows);
@@ -84,7 +83,9 @@ async function getEvents(req: Request, res: Response){
 async function getEventsByOrganiserId(req: Request, res: Response) {
     try {
         const { organiserId } = req.params;
-        const events = await pool.query('SELECT * FROM public.event WHERE organiser_id = $1', [organiserId]);
+        const events = await pool.query('SELECT * FROM public.event WHERE organiser_id = $1', [
+            organiserId,
+        ]);
         return res.status(200).json(events.rows);
     } catch (error) {
         console.error('Error fetching events by organiser ID:', error);
@@ -95,13 +96,17 @@ async function getEventsByOrganiserId(req: Request, res: Response) {
 async function deleteEvent(req: Request, res: Response) {
     try {
         const { eventId } = req.params;
-        const result = await pool.query('DELETE FROM public.event WHERE id = $1 RETURNING *', [eventId]);
+        const result = await pool.query('DELETE FROM public.event WHERE id = $1 RETURNING *', [
+            eventId,
+        ]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Event not found' });
         }
 
-        return res.status(200).json({ message: 'Event deleted successfully', event: result.rows[0] });
+        return res
+            .status(200)
+            .json({ message: 'Event deleted successfully', event: result.rows[0] });
     } catch (error) {
         console.error('Error deleting event:', error);
         return res.status(500).json({ error: 'Failed to delete event' });
@@ -128,12 +133,13 @@ async function updateEvent(req: Request, res: Response) {
             return res.status(404).json({ error: 'Event not found' });
         }
 
-        return res.status(200).json({ message: 'Event updated successfully', event: result.rows[0] });
+        return res
+            .status(200)
+            .json({ message: 'Event updated successfully', event: result.rows[0] });
     } catch (error) {
         console.error('Error updating event:', error);
         return res.status(500).json({ error: 'Failed to update event' });
     }
 }
-
 
 export { createEvent, getEvents, getEventsByOrganiserId, deleteEvent, updateEvent };

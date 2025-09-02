@@ -1,12 +1,15 @@
 import cors from 'cors';
 import express from 'express';
 
-import organiser from './controllers/organiser/organiserProfile.controller.js';
+import eventRouter from './controllers/organiser/event.controller.js';
+import organiserRouter from './controllers/organiser/organiserProfile.controller.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use('/organiser', organiser);
+app.use('/organiser', organiserRouter);
+
+app.use('/event', eventRouter);
 
 app.use(express.json());
 
