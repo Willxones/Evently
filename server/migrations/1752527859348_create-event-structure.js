@@ -5,49 +5,63 @@ export const shorthands = undefined;
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
+ * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-  pgm.createTable('event', {
-    id: { type: 'varchar(36)', primaryKey: true },
-    title: { type: 'varchar(255)', notNull: true },
-    description: { type: 'varchar(1000)', notNull: true },
-    date: { type: 'timestamptz', notNull: true },
-    location: { type: 'varchar(255)', notNull: true },
-    is_cancelled: { type: 'boolean', notNull: true, default: false },
-    organiser_Id: { type: 'varchar(36)', notNull: true, references: '"organiser_profile"(id)', onDelete: 'CASCADE' },
-    created_At: { type: 'timestamptz', notNull: true, default: pgm.func('now()') },
-  });
+  pgm.sql(`
+    CREATE TABLE IF NOT EXISTS public.event (
+        ID TEXT PRIMARY KEY,
+        TITLE VARCHAR(255) NOT NULL,
+        DESCRIPTION VARCHAR(1000) NOT NULL,
+        DATE TIMESTAMPTZ NOT NULL,
+        LOCATION VARCHAR(255) NOT NULL,
+        ORGANISER_ID TEXT NOT NULL,
+        CREATED_AT TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  pgm.createTable('ticket_type', {
-    id: { type: 'varchar(36)', primaryKey: true },
-    event_Id: { type: 'varchar(36)', notNull: true, references: '"event"(id)', onDelete: 'CASCADE' },
-    name: { type: 'varchar(100)', notNull: true },
-    price: { type: 'integer', notNull: true },
-    quantity: { type: 'integer', notNull: true },
-  });
+        CONSTRAINT event_organiser_id_fkey FOREIGN KEY (ORGANISER_ID) REFERENCES organiser_profile(ID) ON DELETE CASCADE
+    );
 
-  pgm.createTable('purchase', {
-    id: { type: 'varchar(36)', primaryKey: true },
-    ticket_type_Id: { type: 'varchar(36)', notNull: true, references: 'Ticket_Type(id)', onDelete: 'CASCADE' },
-    total_Amount: { type: 'integer', notNull: true },
-    created_At: { type: 'timestamptz', notNull: true, default: pgm.func('now()') },
-  });
+    CREATE TABLE IF NOT EXISTS public.ticket_type (
+        ID TEXT PRIMARY KEY,
+        EVENT_ID TEXT NOT NULL,
+        NAME VARCHAR(100) NOT NULL,
+        PRICE INTEGER NOT NULL,
+        QUANTITY INTEGER NOT NULL,
 
-  pgm.createTable('purchase_item', {
-    id: { type: 'varchar(36)', primaryKey: true },
-    purchase_Id: { type: 'varchar(36)', notNull: true, references: 'purchase(id)', onDelete: 'CASCADE' },
-    ticket_Type_Id: { type: 'varchar(36)', notNull: true, references: 'Ticket_Type(id)', onDelete: 'RESTRICT' },
-    quantity: { type: 'integer', notNull: true },
-    amount: { type: 'integer', notNull: true },
-  });
+        CONSTRAINT ticket_type_event_id_fkey FOREIGN KEY (EVENT_ID) REFERENCES event(ID) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS public.purchase (
+        ID TEXT PRIMARY KEY,
+        TICKET_TYPE_ID TEXT NOT NULL,
+        TOTAL_AMOUNT INTEGER NOT NULL,
+        CREATED_AT TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+        CONSTRAINT purchase_ticket_type_id_fkey FOREIGN KEY (TICKET_TYPE_ID) REFERENCES ticket_type(ID) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS public.purchase_item (
+        ID TEXT PRIMARY KEY,
+        PURCHASE_ID TEXT NOT NULL,
+        TICKET_TYPE_ID TEXT NOT NULL,
+        QUANTITY INTEGER NOT NULL,
+        AMOUNT INTEGER NOT NULL,
+
+        CONSTRAINT purchase_item_purchase_id_fkey FOREIGN KEY (PURCHASE_ID) REFERENCES purchase(ID) ON DELETE CASCADE,
+        CONSTRAINT purchase_item_ticket_type_id_fkey FOREIGN KEY (TICKET_TYPE_ID) REFERENCES ticket_type(ID) ON DELETE RESTRICT
+    );
+  `);
 };
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
+ * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
-  pgm.dropTable('purchase_item');
-  pgm.dropTable('purchase');
-  pgm.dropTable('ticket_type');
-  pgm.dropTable('event');
+  pgm.sql(`
+    DROP TABLE IF EXISTS public.purchase_item CASCADE;
+    DROP TABLE IF EXISTS public.purchase CASCADE;
+    DROP TABLE IF EXISTS public.ticket_type CASCADE;
+    DROP TABLE IF EXISTS public.event CASCADE;
+  `);
 };
