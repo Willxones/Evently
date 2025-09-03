@@ -2,10 +2,10 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
-import { createTicketType } from '../../services/tickets/createTicketType.service.js';
-import { deleteTicketType } from '../../services/tickets/deleteTicketType.service.js';
-import { getTicketTypesByEventId } from '../../services/tickets/getTicketType.service.js';
-import { updateTicketType } from '../../services/tickets/updateticketType.service.js';
+import { createTicketType } from '../../services/organiser/ticket-type/createTicketType.service.js';
+import { deleteTicketType } from '../../services/organiser/ticket-type/deleteTicketType.service.js';
+import { getTicketTypesByEventId } from '../../services/organiser/ticket-type/getTicketType.service.js';
+import { updateTicketType } from '../../services/organiser/ticket-type/updateTicketType.service.js';
 
 const router = express.Router();
 
