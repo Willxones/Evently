@@ -7,9 +7,6 @@ async function deleteTicketType(req: Request, res: Response) {
     try {
         const { ticketId } = req.params;
 
-        if (!req.user?.id) {
-            return res.status(401).json({ error: 'Authentication required' });
-        }
         const ticketCheck = await pool.query(
             `
             SELECT ticket_type.id 
@@ -18,7 +15,7 @@ async function deleteTicketType(req: Request, res: Response) {
             JOIN public.organiser_profile organiser_profile ON event.organiser_id = organiser_profile.id
             WHERE ticket_type.id = $1 AND organiser_profile.user_id = $2
         `,
-            [ticketId, req.user.id]
+            [ticketId, req.user!.id]
         );
 
         if (ticketCheck.rows.length === 0) {

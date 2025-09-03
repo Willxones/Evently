@@ -17,11 +17,6 @@ async function createTicketType(req: Request, res: Response) {
         console.log('Creating ticket type with data:', req.body);
         console.log('User:', req.user);
 
-        if (!req.user?.id) {
-            console.error('User not authenticated');
-            return res.status(401).json({ error: 'Authentication required' });
-        }
-
         const parsed = ticketTypeSchema.safeParse(req.body);
         if (!parsed.success) {
             console.error('Validation failed:', parsed.error);
@@ -40,7 +35,7 @@ async function createTicketType(req: Request, res: Response) {
             JOIN public.organiser_profile organiser_profile ON event.organiser_id = organiser_profile.id
             WHERE event.id = $1 AND organiser_profile.user_id = $2
         `,
-            [receivedTicketData.eventId, req.user.id]
+            [receivedTicketData.eventId, req.user!.id]
         );
 
         if (eventCheck.rows.length === 0) {
@@ -65,9 +60,6 @@ async function createTicketType(req: Request, res: Response) {
         return res.status(201).json(snakeToCamel(newTicketType.rows[0]));
     } catch (error: any) {
         console.error('Error creating ticket type:', error);
-        //postgres error codes
-        // 23505: unique violation
-        // 23503: foreign key violation
         if (error.code === '23505') {
             return res.status(400).json({ error: 'Ticket type already exists' });
         }

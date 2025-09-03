@@ -1,23 +1,11 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
 
 import { pool } from '../../../utils/connections/pg.js';
 import snakeToCamel from '../../../utils/helpers/snakeToCamel.js';
 
-const ticketTypeSchema = z.object({
-    eventId: z.string(),
-    name: z.string().min(2).max(100),
-    price: z.number().min(0),
-    quantity: z.number().min(1),
-});
-
 async function getTicketTypesByEventId(req: Request, res: Response) {
     try {
         const { eventId } = req.params;
-
-        if (!req.user?.id) {
-            return res.status(401).json({ error: 'Authentication required' });
-        }
 
         const eventCheck = await pool.query(
             `
@@ -26,7 +14,7 @@ async function getTicketTypesByEventId(req: Request, res: Response) {
             JOIN public.organiser_profile organiser_profile ON event.organiser_id = organiser_profile.id
             WHERE event.id = $1 AND organiser_profile.user_id = $2
         `,
-            [eventId, req.user.id]
+            [eventId, req.user!.id]
         );
 
         if (eventCheck.rows.length === 0) {
