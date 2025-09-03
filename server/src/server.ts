@@ -3,6 +3,7 @@ import express from 'express';
 
 import eventRouter from './controllers/organiser/event.controller.js';
 import organiserRouter from './controllers/organiser/organiserProfile.controller.js';
+import ticketTypeRouter from './controllers/organiser/ticketType.controller.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +11,8 @@ const PORT = process.env.PORT || 3000;
 app.use('/organiser', organiserRouter);
 
 app.use('/event', eventRouter);
+
+app.use('/ticket-type', ticketTypeRouter);
 
 app.use(express.json());
 
