@@ -2,13 +2,13 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticateToken } from '../../middlewares/shared/auth.js';
+import { createEvent } from '../../services/organiser/event/createEvent.service.js';
+import { deleteEvent } from '../../services/organiser/event/deleteEvent.service.js';
 import {
-    createEvent,
     getAllEvents,
     getEventsByOrganiserId,
-    deleteEvent,
-    updateEvent,
-} from '../../services/organiser/event.service.js';
+} from '../../services/organiser/event/getEvents.service.js';
+import { updateEvent } from '../../services/organiser/event/updateEvent.service.js';
 
 const router = express.Router();
 
