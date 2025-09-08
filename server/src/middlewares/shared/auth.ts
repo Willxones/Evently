@@ -22,7 +22,7 @@ export async function authenticateToken(
             return;
         }
 
-        (req as any).user = { id: data.user.id };
+        req.user = { id: data.user.id };
 
         next();
     } catch (error) {
