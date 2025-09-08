@@ -26,6 +26,7 @@ router.post('/create-event', authenticateToken, async (req: Request, res: Respon
 });
 
 router.get('/get-events', authenticateToken, async (req: Request, res: Response) => {
+    console.log(req.cookies);
     await getAllEvents(req, res);
 });
 
