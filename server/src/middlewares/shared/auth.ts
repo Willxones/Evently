@@ -7,16 +7,15 @@ export async function authenticateToken(
     res: Response,
     next: NextFunction
 ): Promise<void> {
-    const authHeader = req.headers['authorization'];
-    const jwt = authHeader && authHeader.split(' ')[1];
+    const token = req.cookies['sb-access-token'];
 
-    if (!jwt) {
+    if (!token) {
         res.sendStatus(401);
         return;
     }
 
     try {
-        const { data, error } = await supabase.auth.getUser(jwt);
+        const { data, error } = await supabase.auth.getUser(token);
 
         if (error || !data.user) {
             res.sendStatus(401);
